@@ -15,6 +15,9 @@ services:
       - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
       - STREAMLIT_GLOBAL_DEVELOPMENT_MODE=false
       - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=512
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+      - PYTHONPATH=/app
     volumes:
       - ./assets:/app/assets:ro
       - ./example-data:/app/example-data:ro

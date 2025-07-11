@@ -131,22 +131,27 @@ curl -f http://localhost:8502/_stcore/health
 
 ### Common Issues
 
-1. **Application Won't Start**
+1. **ModuleNotFoundError: No module named 'src.common'**
+   - **Solution**: Ensure `PYTHONPATH=/app` is set in environment variables
+   - This is already configured in all deployment files
+   - The error occurs when Python can't find the `src` module directory
+
+2. **Application Won't Start**
    - Check logs: `docker-compose logs fbmn-stats`
    - Check port availability: `netstat -tulpn | grep 8502`
    - Ensure sufficient resources are available
 
-2. **Upload Issues**
+3. **Upload Issues**
    - Check `STREAMLIT_SERVER_MAX_UPLOAD_SIZE` setting
    - Verify `/app/data` volume permissions
    - Monitor disk space usage
 
-3. **Performance Issues**
+4. **Performance Issues**
    - Increase memory allocation in `docker-compose.yml`
    - Monitor CPU usage and scale if needed
    - Check for memory leaks in application logs
 
-4. **SSL/Domain Issues**
+5. **SSL/Domain Issues**
    - Verify DNS configuration
    - Check EasyPanel proxy settings
    - Ensure domain points to correct IP

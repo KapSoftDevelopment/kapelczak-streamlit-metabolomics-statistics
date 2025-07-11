@@ -142,25 +142,30 @@ docker stats fbmn-stats-app
 
 ### Common Issues
 
-1. **Application Won't Start**
+1. **ModuleNotFoundError: No module named 'src.common'**
+   - **Solution**: Ensure `PYTHONPATH=/app` is set in environment variables
+   - This is already configured in the docker-compose.coolify.yml file
+   - The error occurs when Python can't find the `src` module directory
+
+2. **Application Won't Start**
    - Check Coolify application logs
    - Verify Docker Compose file syntax
    - Ensure port 8502 is not in use
    - Check resource availability
 
-2. **Domain/SSL Issues**
+3. **Domain/SSL Issues**
    - Verify DNS configuration
    - Check Coolify proxy settings
    - Ensure domain points to Coolify instance IP
    - Wait for SSL certificate provisioning (up to 10 minutes)
 
-3. **Upload/Performance Issues**
+4. **Upload/Performance Issues**
    - Check volume permissions in Coolify
    - Monitor memory usage in dashboard
    - Increase resource limits if needed
    - Verify disk space availability
 
-4. **Health Check Failures**
+5. **Health Check Failures**
    - Verify application is responding on port 8502
    - Check if Streamlit is fully initialized
    - Review application startup logs
