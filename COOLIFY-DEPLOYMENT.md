@@ -24,7 +24,7 @@ This guide provides instructions for deploying the FBMN-STATS application using 
 3. **Configure Repository**
    - **Repository URL**: `https://github.com/Functional-Metabolomics-Lab/FBMN-STATS.git`
    - **Branch**: `main`
-   - **Docker Compose File**: `docker-compose.coolify.yml`
+   - **Docker Compose File**: `docker-compose-coolify.yml`
    - **Auto-deploy**: Enable
 
 4. **Application Settings**
@@ -43,13 +43,13 @@ This guide provides instructions for deploying the FBMN-STATS application using 
 
 2. **Deploy with Coolify Docker Compose**
    ```bash
-   docker-compose -f docker-compose.coolify.yml up -d
+   docker-compose -f docker-compose-coolify.yml up -d
    ```
 
 3. **Verify Deployment**
    ```bash
-   docker-compose -f docker-compose.coolify.yml ps
-   docker-compose -f docker-compose.coolify.yml logs fbmn-stats
+   docker-compose -f docker-compose-coolify.yml ps
+   docker-compose -f docker-compose-coolify.yml logs fbmn-stats
    ```
 
 ## Coolify-Specific Configuration
@@ -88,7 +88,7 @@ Default resource allocation in Coolify:
 
 ```
 .
-├── docker-compose.coolify.yml  # Coolify-specific deployment
+├── docker-compose-coolify.yml  # Coolify-specific deployment
 ├── docker-compose.yml          # Standard deployment
 ├── Dockerfile                  # Container build instructions
 ├── COOLIFY-DEPLOYMENT.md       # This file
@@ -98,12 +98,21 @@ Default resource allocation in Coolify:
 
 ## Coolify Labels and Features
 
+### Optimized Configuration
+The `docker-compose-coolify.yml` file has been optimized for Coolify deployment with the following improvements: <mcreference link="https://coolify.io/docs/knowledge-base/docker/compose" index="1">1</mcreference>
+
+**Key Changes Made:**
+- **Removed explicit Traefik labels**: Coolify automatically adds required Traefik labels
+- **Removed container_name**: Coolify manages container naming
+- **Changed ports to expose**: Uses `expose` instead of `ports` for better security
+- **Removed host volume mounts**: Application files are built into the container
+- **Added Coolify magic variables**: Uses `SERVICE_FQDN_FBMN` for dynamic URL generation
+- **Simplified labels**: Only includes essential `coolify.managed=true` label
+- **Removed custom networks**: Coolify manages networking automatically
+
 ### Managed Labels
-The deployment includes Coolify-specific labels:
+The deployment includes minimal Coolify-specific labels:
 - `coolify.managed=true` - Marks resources as Coolify-managed
-- `coolify.version=1.0.0` - Application version
-- `coolify.name=fbmn-stats` - Application identifier
-- `coolify.description` - Application description
 
 ### Health Checks
 - **Endpoint**: `/_stcore/health`
@@ -113,11 +122,13 @@ The deployment includes Coolify-specific labels:
 - **Start Period**: 40 seconds
 
 ### Automatic Features
-- **SSL/TLS**: Automatically managed by Coolify
-- **Reverse Proxy**: Traefik integration included
+- **SSL/TLS**: Automatically managed by Coolify <mcreference link="https://coolify.io/docs/knowledge-base/docker/compose" index="1">1</mcreference>
+- **Reverse Proxy**: Traefik integration automatically configured
 - **Monitoring**: Built-in health monitoring
 - **Logging**: Centralized log management
 - **Backups**: Automatic volume backups
+- **Domain Management**: Automatic subdomain generation
+- **Load Balancing**: Built-in load balancer configuration
 
 ## Monitoring and Logs
 
@@ -129,10 +140,10 @@ The deployment includes Coolify-specific labels:
 ### Command Line Monitoring
 ```bash
 # View application logs
-docker-compose -f docker-compose.coolify.yml logs -f fbmn-stats
+docker-compose -f docker-compose-coolify.yml logs -f fbmn-stats
 
 # Check container status
-docker-compose -f docker-compose.coolify.yml ps
+docker-compose -f docker-compose-coolify.yml ps
 
 # Monitor resources
 docker stats fbmn-stats-app
@@ -175,7 +186,7 @@ docker stats fbmn-stats-app
 
 ```bash
 # Enter container for debugging
-docker-compose -f docker-compose.coolify.yml exec fbmn-stats bash
+docker-compose -f docker-compose-coolify.yml exec fbmn-stats bash
 
 # Test health endpoint
 curl -I http://localhost:8502/_stcore/health
@@ -257,13 +268,13 @@ Coolify supports automatic updates:
 ### Maintenance Mode
 ```bash
 # Enable maintenance mode
-docker-compose -f docker-compose.coolify.yml stop
+docker-compose -f docker-compose-coolify.yml stop
 
 # Perform maintenance
 # ...
 
 # Resume normal operation
-docker-compose -f docker-compose.coolify.yml up -d
+docker-compose -f docker-compose-coolify.yml up -d
 ```
 
 ## Integration with Coolify Features

@@ -5,9 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fbmn-stats-app
-    ports:
-      - "8502:8502"
     environment:
       - STREAMLIT_SERVER_PORT=8502
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
@@ -18,13 +15,12 @@ services:
       - STREAMLIT_SERVER_ENABLE_CORS=false
       - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
       - PYTHONPATH=/app
+      # Coolify magic variables
+      - SERVICE_FQDN_FBMN=${SERVICE_FQDN_FBMN}
     volumes:
-      - ./assets:/app/assets:ro
-      - ./example-data:/app/example-data:ro
-      - ./pages:/app/pages:ro
-      - ./src:/app/src:ro
-      - ./.streamlit:/app/.streamlit:ro
       - app-data:/app/data
+    expose:
+      - "8502"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8502/_stcore/health"]
@@ -33,30 +29,9 @@ services:
       retries: 3
       start_period: 40s
     labels:
-      # Coolify specific labels
+      # Coolify will automatically add required Traefik labels
       - "coolify.managed=true"
-      - "coolify.version=1.0.0"
-      - "coolify.name=fbmn-stats"
-      - "coolify.description=FBMN-STATS - Statistical analysis for metabolomics data"
-      # Traefik labels for reverse proxy
-      - "traefik.enable=true"
-      - "traefik.http.routers.fbmn-stats.rule=Host(`fbmn-stats.${COOLIFY_FQDN:-localhost}`)"
-      - "traefik.http.routers.fbmn-stats.tls=true"
-      - "traefik.http.routers.fbmn-stats.tls.certresolver=letsencrypt"
-      - "traefik.http.services.fbmn-stats.loadbalancer.server.port=8502"
-      # Health check labels
-      - "traefik.http.routers.fbmn-stats.middlewares=fbmn-stats-headers"
-      - "traefik.http.middlewares.fbmn-stats-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
 
 volumes:
   app-data:
     driver: local
-    labels:
-      - "coolify.managed=true"
-
-networks:
-  default:
-    name: fbmn-stats-network
-    driver: bridge
-    labels:
-      - "coolify.managed=true"
