@@ -133,8 +133,9 @@ curl -f http://localhost:8502/_stcore/health
 
 1. **ModuleNotFoundError: No module named 'src.common'**
    - **Solution**: Ensure `PYTHONPATH=/app` is set in environment variables
-   - This is already configured in all deployment files
-   - The error occurs when Python can't find the `src` module directory
+   - **Additional Fix**: The `src` directory must contain an `__init__.py` file to be recognized as a Python package
+   - Both fixes are already configured in all deployment files
+   - The error occurs when Python can't find the `src` module directory or it's not recognized as a package
 
 2. **Application Won't Start**
    - Check logs: `docker-compose logs fbmn-stats`

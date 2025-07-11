@@ -144,8 +144,9 @@ docker stats fbmn-stats-app
 
 1. **ModuleNotFoundError: No module named 'src.common'**
    - **Solution**: Ensure `PYTHONPATH=/app` is set in environment variables
-   - This is already configured in the docker-compose.coolify.yml file
-   - The error occurs when Python can't find the `src` module directory
+   - **Additional Fix**: The `src` directory must contain an `__init__.py` file to be recognized as a Python package
+   - Both fixes are already configured in the deployment files
+   - The error occurs when Python can't find the `src` module directory or it's not recognized as a package
 
 2. **Application Won't Start**
    - Check Coolify application logs
