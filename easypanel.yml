@@ -1,0 +1,87 @@
+# EasyPanel Auto-Deployment Configuration
+# FBMN-STATS - Feature-Based Molecular Networking Statistics Web App
+
+name: fbmn-stats
+description: "Statistical analysis web app for Feature-Based Molecular Networking data from metabolomics studies"
+version: "1.0.0"
+
+# Application configuration
+app:
+  type: docker-compose
+  source:
+    type: git
+    url: https://github.com/Functional-Metabolomics-Lab/FBMN-STATS.git
+    branch: main
+  
+  # Build configuration
+  build:
+    dockerfile: Dockerfile
+    context: .
+  
+  # Service configuration
+  services:
+    - name: fbmn-stats
+      port: 8502
+      protocol: http
+      healthcheck:
+        path: /_stcore/health
+        interval: 30
+        timeout: 10
+        retries: 3
+      
+      # Environment variables
+      environment:
+        - name: STREAMLIT_SERVER_PORT
+          value: "8502"
+        - name: STREAMLIT_SERVER_ADDRESS
+          value: "0.0.0.0"
+        - name: STREAMLIT_SERVER_HEADLESS
+          value: "true"
+        - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+          value: "false"
+        - name: STREAMLIT_GLOBAL_DEVELOPMENT_MODE
+          value: "false"
+        - name: STREAMLIT_SERVER_MAX_UPLOAD_SIZE
+          value: "512"
+      
+      # Volume mounts
+      volumes:
+        - name: app-data
+          mount: /app/data
+          type: persistent
+      
+      # Resource limits
+      resources:
+        memory: 2Gi
+        cpu: 1000m
+      
+      # Auto-scaling (optional)
+      scaling:
+        min: 1
+        max: 3
+        cpu_threshold: 80
+        memory_threshold: 80
+
+# Domain configuration (update with your domain)
+domain:
+  # Replace with your actual domain
+  host: fbmn-stats.yourdomain.com
+  ssl: true
+  ssl_redirect: true
+
+# Backup configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: 7  # Keep 7 days of backups
+
+# Monitoring
+monitoring:
+  enabled: true
+  alerts:
+    - type: health_check
+      threshold: 3  # Alert after 3 failed health checks
+    - type: memory
+      threshold: 90  # Alert when memory usage > 90%
+    - type: cpu
+      threshold: 90  # Alert when CPU usage > 90%

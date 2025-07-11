@@ -5,4 +5,5 @@ base="light"
 developmentMode = false
 
 [server]
+port=8502
 maxUploadSize=512
